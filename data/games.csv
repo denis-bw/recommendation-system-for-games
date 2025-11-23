@@ -1,0 +1,51 @@
+game_id,title,genre,platform,release_year
+1,Counter-Strike: Global Offensive,FPS,PC,2012
+2,Dota 2,MOBA,PC,2013
+3,The Witcher 3: Wild Hunt,RPG,Multi,2015
+4,Cyberpunk 2077,Action RPG,Multi,2020
+5,Red Dead Redemption 2,Action-Adventure,Multi,2018
+6,Grand Theft Auto V,Action-Adventure,Multi,2013
+7,Dark Souls III,Action RPG,Multi,2016
+8,Elden Ring,Action RPG,Multi,2022
+9,Stardew Valley,Simulation,Multi,2016
+10,Terraria,Sandbox,Multi,2011
+11,Minecraft,Sandbox,Multi,2011
+12,Portal 2,Puzzle,Multi,2011
+13,Half-Life 2,FPS,PC,2004
+14,Civilization VI,Strategy,Multi,2016
+15,XCOM 2,Strategy,Multi,2016
+16,StarCraft II,Strategy,PC,2010
+17,League of Legends,MOBA,PC,2009
+18,Valorant,Tactical FPS,PC,2020
+19,Overwatch 2,Hero Shooter,Multi,2022
+20,Rainbow Six Siege,Tactical FPS,Multi,2015
+21,Apex Legends,Battle Royale,Multi,2019
+22,Fortnite,Battle Royale,Multi,2017
+23,Call of Duty: Warzone,Battle Royale,Multi,2020
+24,Destiny 2,Looter Shooter,Multi,2017
+25,Borderlands 3,Looter Shooter,Multi,2019
+26,The Elder Scrolls V: Skyrim,RPG,Multi,2011
+27,Fallout 4,Action RPG,Multi,2015
+28,Mass Effect Legendary Edition,RPG,Multi,2021
+29,Dragon Age: Inquisition,RPG,Multi,2014
+30,Divinity: Original Sin 2,RPG,Multi,2017
+31,Baldur's Gate 3,RPG,Multi,2023
+32,Disco Elysium,RPG,Multi,2019
+33,Hades,Roguelike,Multi,2020
+34,Dead Cells,Roguelike,Multi,2018
+35,Hollow Knight,Metroidvania,Multi,2017
+36,Celeste,Platformer,Multi,2018
+37,Ori and the Will of the Wisps,Metroidvania,Multi,2020
+38,Sekiro: Shadows Die Twice,Action,Multi,2019
+39,Bloodborne,Action RPG,PS4,2015
+40,God of War,Action-Adventure,PS4,2018
+41,The Last of Us Part II,Action-Adventure,PS4,2020
+42,Ghost of Tsushima,Action-Adventure,PS4,2020
+43,Horizon Zero Dawn,Action RPG,Multi,2017
+44,Death Stranding,Action,Multi,2019
+45,Metal Gear Solid V,Action,Multi,2015
+46,Resident Evil Village,Horror,Multi,2021
+47,Resident Evil 2,Horror,Multi,2019
+48,The Evil Within 2,Horror,Multi,2017
+49,Alien: Isolation,Horror,Multi,2014
+50,Outlast,Horror,Multi,2013

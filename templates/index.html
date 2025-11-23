@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рекомендаційна система ігор</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .modes {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 15px;
+            background: #2a2a2a;
+            border: 2px solid #333;
+            border-radius: 8px;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .mode-btn:hover {
+            border-color: #4a9eff;
+        }
+
+        .mode-btn.active {
+            background: #4a9eff;
+            border-color: #4a9eff;
+            color: #fff;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .panel {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .panel h2 {
+            color: #4a9eff;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #bbb;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4a9eff;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4a9eff;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #3a8eef;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #777;
+            margin-top: 8px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #4a9eff;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4a9eff;
+        }
+
+        .chart-container {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+
+        .chart-title {
+            color: #bbb;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .recommendations {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .game-item {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #4a9eff;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .game-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .game-meta {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .game-score {
+            text-align: right;
+        }
+
+        .score-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4a9eff;
+        }
+
+        .score-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .explanation {
+            background: #222;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .explanation-main {
+            color: #ddd;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .factors {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .factor {
+            background: #2a2a2a;
+            padding: 12px;
+            border-radius: 4px;
+            display: grid;
+            grid-template-columns: 150px 1fr 100px;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .factor-category {
+            font-size: 12px;
+            color: #4a9eff;
+            font-weight: bold;
+        }
+
+        .factor-value {
+            font-size: 13px;
+            color: #ccc;
+        }
+
+        .factor-detail {
+            font-size: 12px;
+            color: #888;
+            margin-top: 3px;
+        }
+
+        .factor-weight {
+            font-size: 11px;
+            color: #666;
+            text-align: right;
+            text-transform: uppercase;
+        }
+
+        .top-games {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .top-game {
+            background: #1a1a1a;
+            padding: 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-game-title {
+            color: #ddd;
+            font-size: 14px;
+        }
+
+        .top-game-rating {
+            color: #4a9eff;
+            font-weight: bold;
+        }
+
+        .system-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .system-stat {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .system-stat-value {
+            font-size: 32px;
+            color: #4a9eff;
+            font-weight: bold;
+        }
+
+        .system-stat-label {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #888;
+        }
+
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .system-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .factor {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Рекомендаційна система відеоігор</h1>
+            <p class="subtitle">Аналіз на основі SVD та Collaborative Filtering</p>
+        </header>
+
+        {% if system_stats %}
+        <div class="system-stats">
+            <div class="system-stat">
+                <div class="system-stat-value">{{ system_stats.total_games }}</div>
+                <div class="system-stat-label">Ігор у базі</div>
+            </div>
+            <div class="system-stat">
+                <div class="system-stat-value">{{ system_stats.total_users }}</div>
+                <div class="system-stat-label">Користувачів</div>
+            </div>
+            <div class="system-stat">
+                <div class="system-stat-value">{{ system_stats.total_ratings }}</div>
+                <div class="system-stat-label">Оцінок</div>
+            </div>
+            <div class="system-stat">
+                <div class="system-stat-value">{{ system_stats.avg_rating }}</div>
+                <div class="system-stat-label">Середня оцінка</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="modes">
+            <button class="mode-btn {% if not active_mode or active_mode == 'user' %}active{% endif %}"
+                    onclick="window.location.href='/'">
+                Персональні рекомендації
+            </button>
+            <button class="mode-btn {% if active_mode == 'similar' %}active{% endif %}"
+                    onclick="document.getElementById('similar-form').scrollIntoView({behavior: 'smooth'})">
+                Схожі ігри
+            </button>
+        </div>
+
+        <div class="content-grid">
+            <div class="panel">
+                <h2>Введіть дані</h2>
+
+                <form action="/analyze" method="post">
+                    <div class="form-group">
+                        <label>ID користувача</label>
+                        <input type="number" name="user_id" placeholder="Наприклад: 1" required>
+                        <div class="hint">Доступні: {{ valid_ids|join(', ') }}</div>
+                    </div>
+                    <button type="submit">Аналізувати профіль</button>
+                </form>
+
+                <div style="margin: 30px 0; border-top: 1px solid #333; padding-top: 30px;" id="similar-form">
+                    <form action="/similar" method="post">
+                        <div class="form-group">
+                            <label>Назва гри</label>
+                            <input type="text" name="game_title" list="games" placeholder="Почніть вводити назву...">
+                            <datalist id="games">
+                                {% for game in valid_games %}
+                                <option value="{{ game }}">
+                                {% endfor %}
+                            </datalist>
+                            <div class="hint">Оберіть зі списку або введіть власну</div>
+                        </div>
+                        <button type="submit">Знайти схожі ігри</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="panel">
+                {% if user_analysis %}
+                    <h2>Профіль користувача #{{ user_analysis.user_id }}</h2>
+
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-label">Оцінено ігор</div>
+                            <div class="stat-value">{{ user_analysis.total_rated }}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Середня оцінка</div>
+                            <div class="stat-value">{{ user_analysis.average_rating }}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Улюблений жанр</div>
+                            <div class="stat-value" style="font-size: 16px;">{{ user_analysis.favorite_genre }}</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Розкид оцінок</div>
+                            <div class="stat-value">{{ user_analysis.rating_std }}</div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #bbb; margin-top: 25px; margin-bottom: 15px; font-size: 16px;">Топ 5 ігор</h3>
+                    <div class="top-games">
+                        {% for game in user_analysis.top_games %}
+                        <div class="top-game">
+                            <div>
+                                <div class="top-game-title">{{ game.title }}</div>
+                                <div style="font-size: 12px; color: #666;">{{ game.genre }} • {{ game.release_year }}</div>
+                            </div>
+                            <div class="top-game-rating">{{ game.rating }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-title">Розподіл оцінок по жанрах</div>
+                        <canvas id="genreChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-title">Активність по рокам</div>
+                        <canvas id="yearChart"></canvas>
+                    </div>
+
+                {% elif similar_games %}
+                    <h2>Схожі на: {{ selected_game }}</h2>
+                    <div class="empty-state" style="padding: 20px;">
+                        <p style="color: #888;">Знайдено {{ similar_games|length }} схожих ігор на основі кореляції оцінок</p>
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <h3>Введіть ID користувача або назву гри</h3>
+                        <p>Система проаналізує профіль та надасть рекомендації</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if recommendations %}
+        <div style="margin-top: 40px;">
+            <div class="panel">
+                <h2>Рекомендації для користувача #{{ user_analysis.user_id }}</h2>
+                <p style="color: #888; margin-bottom: 25px; font-size: 14px;">
+                    На основі матричного розкладання (SVD) та аналізу вподобань
+                </p>
+
+                <div class="recommendations">
+                    {% for game in recommendations %}
+                    <div class="game-item">
+                        <div class="game-header">
+                            <div>
+                                <div class="game-title">{{ game.title }}</div>
+                                <div class="game-meta">
+                                    {{ game.genre }} • {{ game.platform }} • {{ game.year }}
+                                </div>
+                            </div>
+                            <div class="game-score">
+                                <div class="score-value">{{ game.confidence }}%</div>
+                                <div class="score-label">Впевненість</div>
+                            </div>
+                        </div>
+
+                        <div class="explanation">
+                            <div class="explanation-main">
+                                <strong>Чому рекомендуємо:</strong> {{ game.explanation.main }}
+                            </div>
+
+                            <div class="factors">
+                                {% for factor in game.explanation.factors %}
+                                <div class="factor">
+                                    <div class="factor-category">{{ factor.category }}</div>
+                                    <div>
+                                        <div class="factor-value">{{ factor.value }}</div>
+                                        <div class="factor-detail">{{ factor.detail }}</div>
+                                    </div>
+                                    <div class="factor-weight">{{ factor.weight }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if similar_games %}
+        <div style="margin-top: 40px;">
+            <div class="panel">
+                <h2>Схожі ігри на: {{ selected_game }}</h2>
+                <p style="color: #888; margin-bottom: 25px; font-size: 14px;">
+                    На основі Item-based Collaborative Filtering (косинусна схожість)
+                </p>
+
+                <div class="recommendations">
+                    {% for game in similar_games %}
+                    <div class="game-item">
+                        <div class="game-header">
+                            <div>
+                                <div class="game-title">{{ game.title }}</div>
+                                <div class="game-meta">
+                                    {{ game.genre }} • {{ game.platform }} • {{ game.year }}
+                                </div>
+                            </div>
+                            <div class="game-score">
+                                <div class="score-value">{{ game.confidence }}%</div>
+                                <div class="score-label">Схожість</div>
+                            </div>
+                        </div>
+
+                        <div class="explanation">
+                            <div class="explanation-main">
+                                <strong>Чому схожа:</strong> {{ game.explanation.main }}
+                            </div>
+
+                            <div class="factors">
+                                {% for factor in game.explanation.factors %}
+                                <div class="factor">
+                                    <div class="factor-category">{{ factor.category }}</div>
+                                    <div>
+                                        <div class="factor-value">{{ factor.value }}</div>
+                                        <div class="factor-detail">{{ factor.detail }}</div>
+                                    </div>
+                                    <div class="factor-weight">{{ factor.weight }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        {% if user_analysis %}
+        const genreData = {{ user_analysis.genre_stats | tojson }};
+        const genreLabels = genreData.map(g => g.genre);
+        const genreCounts = genreData.map(g => g.count);
+        const genreAvgs = genreData.map(g => g.avg_rating);
+
+        new Chart(document.getElementById('genreChart'), {
+            type: 'bar',
+            data: {
+                labels: genreLabels,
+                datasets: [{
+                    label: 'Кількість ігор',
+                    data: genreCounts,
+                    backgroundColor: '#4a9eff',
+                    yAxisID: 'y'
+                }, {
+                    label: 'Середня оцінка',
+                    data: genreAvgs,
+                    type: 'line',
+                    borderColor: '#ff6b6b',
+                    backgroundColor: 'transparent',
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        grid: { color: '#333' },
+                        ticks: { color: '#888' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        grid: { display: false },
+                        ticks: { color: '#888' },
+                        min: 0,
+                        max: 5
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#888' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#888' }
+                    }
+                }
+            }
+        });
+
+        const yearData = {{ user_analysis.year_stats | tojson }};
+        const yearLabels = yearData.map(y => y.year);
+        const yearCounts = yearData.map(y => y.count);
+
+        new Chart(document.getElementById('yearChart'), {
+            type: 'bar',
+            data: {
+                labels: yearLabels,
+                datasets: [{
+                    label: 'Кількість оцінок',
+                    data: yearCounts,
+                    backgroundColor: '#4a9eff'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        grid: { color: '#333' },
+                        ticks: { color: '#888' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#888' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#888' }
+                    }
+                }
+            }
+        });
+        {% endif %}
+    </script>
+</body>
+</html>
